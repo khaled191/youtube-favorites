@@ -1,0 +1,15 @@
+{
+  "id": "com.khaled.ytfavorites",
+  "version": "1.0.0",
+  "vendor": "Khaled",
+  "type": "web",
+  "main": "index.html",
+  "title": "YT Favorites",
+  "icon": "icons/icon80.png",
+  "largeIcon": "icons/icon130.png",
+  "bgColor": "#0f0f0f",
+  "resolution": "1920x1080",
+  "iconColor": "#0f0f0f",
+  "splashBackground": "icons/splash.png",
+  "requiredPermissions": ["network.access", "internet"]
+}
