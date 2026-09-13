@@ -40,6 +40,21 @@ const Player = (() => {
     }, 5000);
   }
 
+  function _handlePlayerError(e) {
+    const messages = {
+      2: "Invalid video ID.",
+      5: "This video can't be played in the HTML5 player.",
+      100: "Video not found (it may be private or deleted).",
+      101: "The video owner has disabled playback on other websites.",
+      150: "The video owner has disabled playback on other websites.",
+      153: "YouTube rejected the embed (referrer/origin issue). This can also mean the video's owner blocked embedding."
+    };
+    const msg = messages[e.data] || `Playback error (code ${e.data}).`;
+    console.error("YT Player error:", e.data, msg);
+    const infoEl = document.getElementById("player-channel");
+    if (infoEl) infoEl.textContent = `⚠ ${msg}`;
+  }
+
   function _stopProgressTracking() {
     if (progressTimer) {
       clearInterval(progressTimer);
@@ -70,15 +85,28 @@ const Player = (() => {
     if (ytPlayer) {
       ytPlayer.loadVideoById({ videoId: meta.videoId, startSeconds: startAt });
     } else {
+      // YouTube's embedded player now requires a valid Referer/origin to
+      // play at all ("Error 153"). webOS apps can be served from file://
+      // or an internal scheme with no usable origin, so fall back to a
+      // real https origin in that case — YouTube only checks that it's a
+      // well-formed origin, not that it's serving this exact app.
+      const safeOrigin = (window.location.origin && window.location.origin.startsWith("http"))
+        ? window.location.origin
+        : "https://www.youtube.com";
+
       ytPlayer = new YT.Player("player-container", {
         width: "1920",
         height: "810",
         videoId: meta.videoId,
+        host: "https://www.youtube-nocookie.com",
         playerVars: {
           autoplay: 1,
           controls: 1,
           start: startAt,
-          rel: 0
+          rel: 0,
+          origin: safeOrigin,
+          enablejsapi: 1,
+          widget_referrer: safeOrigin
         },
         events: {
           onReady: () => _startProgressTracking(),
@@ -86,7 +114,8 @@ const Player = (() => {
             if (e.data === YT.PlayerState.ENDED) {
               Storage.updateProgress(meta.videoId, Math.floor(ytPlayer.getDuration()), Math.floor(ytPlayer.getDuration()));
             }
-          }
+          },
+          onError: (e) => _handlePlayerError(e)
         }
       });
     }

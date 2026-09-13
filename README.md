@@ -110,6 +110,31 @@ webos-youtube-app/
 | OK / Enter | Select focused item |
 | Back | Go back one view; exits the app from the Home screen |
 
+## Troubleshooting: "Error 153 - Video player configuration error"
+
+YouTube recently started requiring a valid `Referer`/origin on embedded
+players; apps running from `file://` or a packaged/webview context often
+don't send one, which triggers this error. The app already includes two
+fixes for this (a `<meta name="referrer">` tag in `index.html`, plus
+explicit `origin`/`host` params in `js/player.js`). If you still see it:
+
+- Confirm the app is actually being served over `http(s)://` by the webOS
+  runtime rather than `file://` — check `window.location.origin` in the
+  webOS Inspector (see below). `ares-package`/`ares-install` normally
+  handles this correctly.
+- Try toggling `host` in `js/player.js` between
+  `https://www.youtube-nocookie.com` and removing it entirely (plain
+  `https://www.youtube.com`) — different webOS firmware versions behave
+  slightly differently here.
+- Some specific videos have embedding disabled by the uploader
+  (that shows as error 101/150, not 153, but is easy to mistake for it).
+- Use the **webOS Inspector** to see the real console error:
+  ```bash
+  ares-inspect -d <device-name>
+  ```
+  This opens a remote Chrome DevTools session for the running app —
+  check the Console/Network tabs for the actual blocked request.
+
 ## Known limitations / things to customize before real use
 
 - **Icons** in `icons/` are plain placeholders — replace with real artwork

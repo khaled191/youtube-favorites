@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <title>YT Favorites</title>
 <meta name="viewport" content="width=1920, height=1080, initial-scale=1.0, user-scalable=no">
+<!-- Required for YouTube embeds: without a Referer header, YouTube's player
+     rejects playback with "Error 153 - Video player configuration error".
+     Packaged/webview apps often suppress the referrer by default. -->
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
