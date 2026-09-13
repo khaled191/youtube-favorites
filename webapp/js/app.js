@@ -28,10 +28,12 @@ const App = (() => {
       const prev = viewStack[viewStack.length - 1];
       showView(prev, { pushHistory: false });
     } else {
-      // At home with nothing to go back to -> exit the app (webOS)
-      if (window.webOS && window.webOS.platformBack) {
-        window.webOS.platformBack();
-      }
+      // At home with nothing to go back to -> exit the app.
+      // webOS intercepts window.close() on an app's root window and
+      // terminates the app with it — this works whether or not the
+      // webOSTV.js helper library is loaded, so it's safe for both
+      // packaged and hosted apps.
+      window.close();
     }
   }
 
@@ -190,10 +192,6 @@ const App = (() => {
 
     renderHome();
     showView("view-home", { pushHistory: false });
-
-    if (window.webOSTVjs || window.webOS) {
-      console.log("Running on webOS TV runtime");
-    }
   }
 
   return { init, renderHome, showView, goBack, openChannel };
