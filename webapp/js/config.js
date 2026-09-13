@@ -4,7 +4,7 @@
 // (enable "YouTube Data API v3" on the project first)
 // ---------------------------------------------------------------
 window.APP_CONFIG = {
-  YT_API_KEY: "PUT_YOUR_YOUTUBE_DATA_API_KEY_HERE",
+  YT_API_KEY: "AIzaSyAV4f-ADiK1sCSMKfvJBZ3Nifg9BLM-YT4",
   YT_API_BASE: "https://www.googleapis.com/youtube/v3",
   MAX_SEARCH_RESULTS: 12,
   MAX_CHANNEL_VIDEOS: 24,
