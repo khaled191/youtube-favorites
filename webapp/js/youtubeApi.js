@@ -22,7 +22,7 @@ const YouTubeAPI = (() => {
   async function searchChannels(query) {
     const data = await _get("search", {
       part: "snippet",
-      type: "channel",
+      type: "video",
       q: query,
       maxResults: window.APP_CONFIG.MAX_SEARCH_RESULTS
     });
